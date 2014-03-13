@@ -1,0 +1,14 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Itinerary:</strong>
+  <%= @query_result.itinerary %>
+</p>
+
+<p>
+  <strong>Price:</strong>
+  <%= @query_result.price %>
+</p>
+
+<%= link_to 'Edit', edit_query_result_path(@query_result) %> |
+<%= link_to 'Back', query_results_path %>

@@ -1,0 +1,24 @@
+<p id="notice"><%= notice %></p>
+
+<p>
+  <strong>Origins:</strong>
+  <%= @query.origins %>
+</p>
+
+<p>
+  <strong>Destinations:</strong>
+  <%= @query.destinations %>
+</p>
+
+<p>
+  <strong>Origin dates:</strong>
+  <%= @query.origin_dates %>
+</p>
+
+<p>
+  <strong>Destination dates:</strong>
+  <%= @query.destination_dates %>
+</p>
+
+<%= link_to 'Edit', edit_query_path(@query) %> |
+<%= link_to 'Back', queries_path %>

@@ -1,0 +1,33 @@
+<h1>Listing queries</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Origins</th>
+      <th>Destinations</th>
+      <th>Origin dates</th>
+      <th>Destination dates</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @queries.each do |query| %>
+      <tr>
+        <td><%= query.origins %></td>
+        <td><%= query.destinations %></td>
+        <td><%= query.origin_dates %></td>
+        <td><%= query.destination_dates %></td>
+        <td><%= link_to 'Show', query %></td>
+        <td><%= link_to 'Edit', edit_query_path(query) %></td>
+        <td><%= link_to 'Destroy', query, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Query', new_query_path %>

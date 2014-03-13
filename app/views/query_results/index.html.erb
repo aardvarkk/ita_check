@@ -1,0 +1,29 @@
+<h1>Listing query_results</h1>
+
+<table>
+  <thead>
+    <tr>
+      <th>Itinerary</th>
+      <th>Price</th>
+      <th></th>
+      <th></th>
+      <th></th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <% @query_results.each do |query_result| %>
+      <tr>
+        <td><%= query_result.itinerary %></td>
+        <td><%= query_result.price %></td>
+        <td><%= link_to 'Show', query_result %></td>
+        <td><%= link_to 'Edit', edit_query_result_path(query_result) %></td>
+        <td><%= link_to 'Destroy', query_result, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>
+
+<br>
+
+<%= link_to 'New Query result', new_query_result_path %>
