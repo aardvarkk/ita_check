@@ -119,8 +119,10 @@ namespace :ita do
         execute_query q
       end
     rescue
+    ensure
       File.delete FILENAME
     end
+
   end
 
 end
