@@ -1,8 +1,11 @@
+<%= link_to 'Back', @query_results.first.query %>
+
 <h1>Listing query_results</h1>
 
 <table>
   <thead>
     <tr>
+      <th>Created</th>
       <th>Itinerary</th>
       <th>Price</th>
       <th></th>
@@ -14,11 +17,12 @@
   <tbody>
     <% @query_results.each do |query_result| %>
       <tr>
+        <td><%= query_result.created_at.to_formatted_s :short %></td>
         <td><%= query_result.itinerary %></td>
-        <td><%= query_result.price %></td>
-        <td><%= link_to 'Show', query_result %></td>
-        <td><%= link_to 'Edit', edit_query_result_path(query_result) %></td>
-        <td><%= link_to 'Destroy', query_result, method: :delete, data: { confirm: 'Are you sure?' } %></td>
+        <td><%= number_to_currency query_result.price %></td>
+        <td><%#= link_to 'Show', query_query_result_path(query_result.query, query_result) %></td>
+        <td><%#= link_to 'Edit', edit_query_query_result_path(query_result.query, query_result) %></td>
+        <td><%#= link_to 'Destroy', query_query_result_path(query_result.query, query_result), method: :delete, data: { confirm: 'Are you sure?' } %></td>
       </tr>
     <% end %>
   </tbody>
@@ -26,4 +30,4 @@
 
 <br>
 
-<%= link_to 'New Query result', new_query_result_path %>
+<%#= link_to 'New Query result', new_query_result_path %>

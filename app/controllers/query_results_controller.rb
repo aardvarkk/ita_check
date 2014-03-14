@@ -1,10 +1,14 @@
 class QueryResultsController < ApplicationController
+  before_action :set_query
   before_action :set_query_result, only: [:show, :edit, :update, :destroy]
 
   # GET /query_results
   # GET /query_results.json
   def index
-    @query_results = QueryResult.all
+    # @query_results = QueryResult.all.order('created_at DESC')
+    logger.debug "QUERY #{@query}"
+    logger.debug "RESULTS #{@query.query_results.count}"
+    @query_results = @query.query_results.order(:price).order('created_at desc')
   end
 
   # GET /query_results/1
@@ -62,9 +66,14 @@ class QueryResultsController < ApplicationController
   end
 
   private
+
     # Use callbacks to share common setup or constraints between actions.
     def set_query_result
       @query_result = QueryResult.find(params[:id])
+    end
+
+    def set_query
+      @query = Query.find(params[:query_id])
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.

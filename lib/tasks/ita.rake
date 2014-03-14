@@ -2,6 +2,9 @@ require 'capybara'
 require 'capybara-webkit'
 require 'net/http' 
 require 'open-uri'
+require 'headless'
+
+Rake.application.options.trace = true
 
 LONG_WAIT = 60
 SHORT_WAIT = 0
@@ -27,11 +30,15 @@ namespace :ita do
     @prices ||= []
   end
 
+  def get_itin_str(itin)
+    return "#{itin[:oa]} #{itin[:od].strftime('%m/%d/%Y')} -> #{itin[:da]} #{itin[:dd].strftime('%m/%d/%Y')}"
+  end
+
   def test_itin(itin)
 
     include Capybara::DSL
 
-    itin_str = "#{itin[:oa]} #{itin[:od].strftime('%m/%d/%Y')} -> #{itin[:da]} #{itin[:dd].strftime('%m/%d/%Y')}"
+    itin_str = get_itin_str itin
     puts "Testing itinerary #{itin_str}"
 
     Capybara.current_session.reset!
@@ -53,43 +60,19 @@ namespace :ita do
     prices << { itin: itin_str, price: best_price_num }
     puts prices.last
 
-    QueryResult.create(itinerary: itin_str, price: best_price_num)
+    QueryResult.create(itinerary: itin_str, price: best_price_num, query_id: itin[:id])
 
     # save_screenshot "#{itin.values.join('_')}.png"
 
   end
 
-  def run_query(oa, od, da, dd)
+  def run_query(query)
 
-    # Here's the massive loop...
-    # for all origin airports on all origin dates
-    # and all destination airports on all destination dates
-    oa.each do |_oa|
-      od.each do |_od|
-        da.each do |_da|
-          dd.each do |_dd|
-
-            # Get a baseline by testing without the strike
-            test_itin oa: _oa, od: _od, da: _da, dd: _dd
-          end
-        end
-      end
-    end
-
-    prices.sort_by! { |p| p[:price] }
-    puts prices
-
-  end
-
-  def parse_dates(dates)
-    dates.split(',').map { |d| Date.parse d }
-  end
-
-  def execute_query(query)
-
-    oa = query.origins.split(',')
+    # oa = query.origins.split(',')
+    oa = [query.origins]
     od = parse_dates query.origin_dates
-    da = query.destinations.split(',')
+    # da = query.destinations.split(',')
+    da = [query.destinations]
     dd = parse_dates query.destination_dates
 
     puts "Running query: #{oa}-#{da}-#{od}-#{dd}"
@@ -98,7 +81,34 @@ namespace :ita do
     http = Net::HTTP.new(@host, @port)
     http.read_timeout = LONG_WAIT
 
-    run_query oa, od, da, dd
+    Headless.ly do
+
+      # Here's the massive loop...
+      # for all origin airports on all origin dates
+      # and all destination airports on all destination dates
+      oa.each do |_oa|
+        od.each do |_od|
+          da.each do |_da|
+            dd.each do |_dd|
+
+              puts "Testing #{_oa}-#{_od}-#{_da}-#{_dd}"
+
+              # Get a baseline by testing without the strike
+              test_itin oa: _oa, od: _od, da: _da, dd: _dd, id: query.id
+            end
+          end
+        end
+      end
+
+      prices.sort_by! { |p| p[:price] }
+      puts prices
+
+    end
+
+  end
+
+  def parse_dates(dates)
+    dates.split(',').map { |d| Date.parse d }
   end
 
   desc "Perform all queries in database"
@@ -116,7 +126,11 @@ namespace :ita do
     # Do work...
     begin
       Query.all.each do |q|
-        execute_query q
+        if !q.active?
+          puts "Skipping inactive query #{q.id}"
+        else
+          run_query q
+        end
       end
     rescue
     ensure

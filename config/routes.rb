@@ -1,7 +1,7 @@
 ItaCheck::Application.routes.draw do
-  resources :query_results
 
   resources :queries do
+    resources :query_results
     member do
       get 'display'
     end

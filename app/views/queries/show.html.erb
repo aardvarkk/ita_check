@@ -21,16 +21,7 @@
 </p>
 
 <%= link_to 'Edit', edit_query_path(@query) %> |
-<%= link_to 'Back', queries_path %>
+<%= link_to 'Back', queries_path %> |
+<%= link_to 'Query Results', query_query_results_path(@query) %>
 
 <%= line_chart display_query_path %>
-
-<table>
-  <% @query_results.order(:price).each do |q| %>
-    <tr>
-      <td><strong><%= number_to_currency q.price %></strong></td>
-      <td><%= q.itinerary %></td>
-      <td><em><%= q.created_at.to_formatted_s(:short) %></em></td>
-    </tr>
-  <% end %>
-</table>
