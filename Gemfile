@@ -46,3 +46,5 @@ end
 
 gem 'capybara'
 gem 'capybara-webkit'
+gem 'chartkick'
+gem 'groupdate'

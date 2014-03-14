@@ -1,7 +1,11 @@
 ItaCheck::Application.routes.draw do
   resources :query_results
 
-  resources :queries
+  resources :queries do
+    member do
+      get 'display'
+    end
+  end
 
   # The priority is based upon order of creation: first created -> highest priority.
   # See how all your routes lay out with "rake routes".

@@ -1,5 +1,10 @@
 class QueriesController < ApplicationController
-  before_action :set_query, only: [:show, :edit, :update, :destroy]
+  before_action :set_query, only: [:display, :show, :edit, :update, :destroy]
+  before_action :set_query_results, only: [:display, :show]
+
+  def display
+    render json: @query_results.group_by_day(:created_at).minimum(:price)
+  end
 
   # GET /queries
   # GET /queries.json
@@ -64,7 +69,12 @@ class QueriesController < ApplicationController
   private
     # Use callbacks to share common setup or constraints between actions.
     def set_query
+      logger.debug "SETQUERY"
       @query = Query.find(params[:id])
+    end
+
+    def set_query_results
+      @query_results = @query.query_results
     end
 
     # Never trust parameters from the scary internet, only allow the white list through.
