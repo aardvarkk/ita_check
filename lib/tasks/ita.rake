@@ -106,7 +106,7 @@ namespace :ita do
     FILENAME = 'tmp/pids/ita_query.pid'
     if File.exist? FILENAME
       puts "Previous query is still running..."
-      #next
+      next
     end
 
     pid = File.open FILENAME, 'w'
