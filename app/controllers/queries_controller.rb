@@ -3,7 +3,7 @@ class QueriesController < ApplicationController
   before_action :set_query_results, only: [:display, :show]
 
   def display
-    render json: @query_results.group_by_day(:created_at).minimum(:price)
+    render json: @query_results.group_by_hour(:created_at).minimum(:price)
   end
 
   # GET /queries
